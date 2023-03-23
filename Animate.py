@@ -44,6 +44,6 @@ class Animate(Scene):
             bobs[1].animate.move_to([x[i][1],y[i][1],0]),
             bobs[2].animate.move_to([x[i][2],y[i][2],0]),
 
-            run_time = 1/60
+            run_time = 1/144
                 
             )
