@@ -39,5 +39,4 @@ By default, manim generates an mp4 at 1080p at 60fps, if you want to change this
 
 [3] Stoneking. Eric, "Implementation of Kane's Method for a spacecraft Composed of Multiple Rigid Bodies", AIAA-2013-4649
 
-[4] Charles. S, "The Lagrangian Mechanics and Pseudo-Periodicity of The Many-Body Planar Pendulum System", doi:  
-10.48550/arXiv.1911.04364
+[4] Charles. S, "The Lagrangian Mechanics and Pseudo-Periodicity of The Many-Body Planar Pendulum System", doi: 10.48550/arXiv.1911.04364
