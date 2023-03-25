@@ -1,85 +1,70 @@
-import sympy as sp
-import sympy.physics.mechanics as me
 import numpy as np
 import scipy
-from sympy import Dummy
 
+from sympy import symbols 
+from sympy.physics import mechanics as mech
+from sympy import Dummy, lambdify
+from scipy.integrate import odeint
+from configparser import ConfigParser
+
+file = 'config.ini'
+config = ConfigParser()
+config.read(file)
 
 #Parameter Configuration:
-n = 2                                                         #Number of Masses
-b = 0.3                                                       #Air Resistance
-theta = 120                                                   #Initial Angle (0-360)
-omega = 0                                                     #Initial Angular Velocity
-gravity = 5                                                   #Gravity
+n = int(config['PARAMETERS']['n'])                                                       
+b = float(config['PARAMETERS']['b'])                                                       
+theta = float(config['PARAMETERS']['theta'])
+omega = float(config['PARAMETERS']['omega'])
+gravity = float(config['PARAMETERS']['gravity'])                                             
+duration = int(config['PARAMETERS']['duration'])                                               
+fps = int(config['PARAMETERS']['fps'])                                                    
+lengths = np.fromstring(config['PARAMETERS']['lengths'], sep = ' ')
+masses = np.fromstring(config['PARAMETERS']['masses'], sep = ' ')
+t = np.linspace(0, duration, duration*fps)
 
+g = symbols('g')
+l = symbols('l:{0}'.format(n))
+m = symbols('m:{0}'.format(n))
+q = mech.dynamicsymbols('q:{0}'.format(n))
+u = mech.dynamicsymbols('u:{0}'.format(n))
 
-
-#Create Constants
-m = sp.symbols('m:{0}'.format(n))                             #Masses
-l = sp.symbols('l:{0}'.format(n))                             #Lengths
-g = sp.symbols('g')                                           #Gravity
-
-#Introduce Generalized Coordinates                  
-q = me.dynamicsymbols('q:{0}'.format(n))                      #Generalized Coordinates in Configuration Space
-qd = me.dynamicsymbols('q:{0}'.format(n), level = 1)          #Vector of the Time Derivatives of the Generalized Coordinates 
-u = me.dynamicsymbols('u:{0}'.format(n))                      #Generalized Speeds in Configuration Space
-                        
-N = me.ReferenceFrame('N')                                    #Inertial Reference Frame
-O = me.Point('O')                                             #Coordinate Location of Origin
-O.set_vel(N, 0)                                               #Sets the Velocity Vector of Point 'O' Relative to Frame 'N'
-
-#Kanes Method
-def get_equations():
+#Returns Equations of Motion
+def kanes_method(n):
     
-    ref_frames, kde, particle_locs, particles, gravities, forces, drags = ([] for i in range(7))
+    particles, forces, kde = ([] for i in range(3))
+
+    t = symbols('t')
+    N = mech.ReferenceFrame('N')
+    O = mech.Point('O')
+    O.set_vel(N,0)
 
     for i in range(n):
         
-        #Create Particle Objects
-        if i == 0:
-            ref_frames.append(N.orientnew('mass_ref_frame{0}'.format(i), 'Axis', (q[i], N.z)))
-            particle_loc = O.locatenew('P{0}'.format(i), (-l[i] * ref_frames[i].y))
-            particle_object = me.Particle('p{0}'.format(i), particle_loc, m[i])
-        else:
-            ref_frames.append(ref_frames[i-1].orientnew('mass_ref_frame{0}'.format(i), 'Axis', (q[i], N.z)))
-            particle_loc = particle_locs[i-1].locatenew('P{0}'.format(i), (-l[i] * ref_frames[i].y))
-            particle_object = me.Particle('p'.format(i), particle_loc, m[i])
-        particle_locs.append(particle_loc)
-        particles.append(particle_object)
+        Ni = N.orientnew('N' + str(i), 'Axis', [q[i], N.z])      
         
-        #Create Kinetic Differential Equations
-        for j in range(i):                
-            qd[0] += qd[j+1]
-        kde.append(u[i]- qd[0])
+        PL = O.locatenew('PL' + str(i), l[i] * Ni.y)                   
         
-        #Add Action Forces
-        drags.append(-b*u[i]*N.y - b*u[i]*N.x - b*u[i]*N.z)
-        gravities.append(-g*m[i]*N.y)
-        forces.append((particle_locs[i], gravities[i] + drags[i]))
-           
-    #Calculate Fr + Fr* = 0
-    KM = me.KanesMethod(N, q, u, kd_eqs=kde) # Kane's method instance
-    fr, fstar = KM.kanes_equations(particles, forces) # "Evaluate the sum"
-
-    return(KM,-fstar,fr)
-
-
-#Symbolic to Numerical and Integrate
-def numerical_integration(KM, fstar, fr, times, lengths = None, masses = 1):
-    
-    
-    y0 = np.deg2rad(np.concatenate([np.broadcast_to(theta, n),
-                                    np.broadcast_to(omega, n)]))
-
-    
-    if lengths is None:
-        lengths = np.ones(n) / n
-    lengths = np.broadcast_to(lengths, n)
-    masses = np.broadcast_to(masses, n)
-    
+        PO = mech.Particle('PO' + str(i), PL, m[i])             
+        particles.append(PO)
         
+        forces.append((PL, (g*m[i]*N.y) + (b*u[i]*N.x + b*u[i]*N.y + b*u[i]*N.z)))
+        kde.append(q[i].diff(t) - u[i])
+        
+        O = PL #Sets the reference frame as the current one for the next iteration
+        
+    KM = mech.KanesMethod(N, q, u, kd_eqs = kde)
+    fr, fr_star = KM.kanes_equations(particles, forces)
+
+    return KM, fr, fr_star
+
+#Returns the X-Y coordinates [Xi,Yi]
+def integrate(n, KM, times, initial_thetas, initial_omegas = 0):
+    
+    y0 = np.deg2rad(np.concatenate([np.broadcast_to(initial_thetas, n), np.broadcast_to(initial_omegas, n)]))
+    
     parameters = [g] + list(l) + list(m)
-    parameter_vals = [gravity] + list(lengths) + list(masses)    
+    parameter_vals = [gravity] + list(lengths) + list(masses)
     
     unknowns = [Dummy() for i in q + u]
     unknown_dict = dict(zip(q + u, unknowns))
@@ -88,32 +73,26 @@ def numerical_integration(KM, fstar, fr, times, lengths = None, masses = 1):
     mm_sym = KM.mass_matrix_full.subs(kds).subs(unknown_dict)
     fo_sym = KM.forcing_full.subs(kds).subs(unknown_dict)
     
-    mm_func = sp.lambdify(unknowns + parameters, mm_sym)
-    fo_func = sp.lambdify(unknowns + parameters, fo_sym)
+    mm_num = lambdify(unknowns + parameters, mm_sym)
+    fo_num = lambdify(unknowns + parameters, fo_sym)
     
-    def gradient(y, t, args):
-        vals = np.concatenate((y, args))
-        sol = np.linalg.solve(mm_func(*vals), fo_func(*vals))
+    #Returns Generalized Coordiantes and Velocities [qi,ui]
+    def solve_matrix(y, t, args):
+        nums = list(y) + list(args)
+        sol = np.linalg.solve(mm_num(*nums), fo_num(*nums))
         return np.array(sol).T[0]
     
-    return scipy.integrate.odeint(gradient, y0, times, args=(parameter_vals,))
+    #Returns the X-Y coordinates [Xi,Yi]
+    def get_xy_coords(gen_coords):
+        x = lengths * np.sin(gen_coords[:, :n])
+        y = -lengths * np.cos(gen_coords[:, :n])
+        return np.cumsum(x, 1), np.cumsum(y, 1)
+    
+    generalized_coords = scipy.integrate.odeint(solve_matrix, y0, times, args = (parameter_vals,))
+    x, y = get_xy_coords(generalized_coords)
+    return(x, y)
 
 
-#Convert Generalized Coordinates to Cartesian Coordinates
-def get_xy_coords(integrated_func, lengths=None):
-    """Get (x, y) coordinates from generalized coordinates p"""
-    integrated_func = np.atleast_2d(integrated_func)
-    n = integrated_func.shape[1] // 2
-    if lengths is None:
-        lengths = np.ones(n) / n
-    zeros = np.zeros(integrated_func.shape[0])[:, None]
-    x = np.hstack([zeros, lengths * np.sin(integrated_func[:, :n])])
-    y = np.hstack([zeros, -lengths * np.cos(integrated_func[:, :n])])
-    return np.cumsum(x, 1), np.cumsum(y, 1)
+KM, fr, fr_star = kanes_method(n)
+x, y = integrate(n, KM, t, theta)
 
-
-t = np.arange(0, 10+0.006944444444, 0.006944444444)
-
-KM,EOM_i,EOM_f = get_equations()
-integrated_func = numerical_integration(KM,EOM_i,EOM_f,t)
-x, y = get_xy_coords(integrated_func)

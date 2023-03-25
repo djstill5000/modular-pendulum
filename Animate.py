@@ -1,6 +1,13 @@
-
 import Kane_Integrate
+import numpy as np
+
 from manim import *
+from manim.utils.color import Colors
+from configparser import ConfigParser
+
+file = 'config.ini'
+config = ConfigParser()
+config.read(file)
 
 class Animate(Scene):
     
@@ -8,11 +15,11 @@ class Animate(Scene):
 
         x = Kane_Integrate.x
         y = Kane_Integrate.y
-
-        n = 2
+        n = Kane_Integrate.n
+        
         bobs = []
         lines = []
-        colors = [GREEN,ORANGE,YELLOW,BLUE,PURPLE]
+        colors = [RED,BLUE,GREEN,YELLOW,ORANGE]
 
         #Creates updater object for the Strings
         def getline(Point1,Point2):
@@ -31,19 +38,16 @@ class Animate(Scene):
         #Calls getline for each String
         for i in range(n):
             lines[i].add_updater(lambda mobject, i=i: mobject.become(getline(bobs[i],bobs[i+1])))
-    
+        
         #Animation Loop
         for i in range(len(x)):
+
+            Animations = []
             
             for j in range(len(lines)):
                 self.remove(bobs[j+1])
                 self.add(bobs[j+1],lines[j])
-                   
-            self.play(            
+                Animations.append(bobs[j+1].animate.move_to([x[i][j],y[i][j],0]))
 
-            bobs[1].animate.move_to([x[i][1],y[i][1],0]),
-            bobs[2].animate.move_to([x[i][2],y[i][2],0]),
-
-            run_time = 1/144
-                
-            )
+            self.play(*Animations, run_time = 1/Kane_Integrate.fps)
+            
