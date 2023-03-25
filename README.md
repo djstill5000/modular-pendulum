@@ -1,7 +1,7 @@
 # Modular-Pendulum
 
-![Animate_ManimCE_v0 17 2](https://user-images.githubusercontent.com/89823585/227409278-f264047d-eadb-4f17-8891-8968fa4f14f6.gif)
-<img src="![Animate_ManimCE_v0 17 2](https://user-images.githubusercontent.com/89823585/227701903-da46f64c-1938-4a4a-a49b-cbbaadde48dd.gif)" width="100" height="100"/>
+![Animate_ManimCE_v0 17 2](https://user-images.githubusercontent.com/89823585/227702606-5c100396-460c-40bd-b2d8-01b59b26dc19.gif)
+
 The equations of motions are found using Kane's method via the Sympy library. The Integration is done using Scipy and the animation is done in ManimCE.
 
 ## Installation
@@ -33,7 +33,7 @@ By default, manim generates an mp4 at 1080p at 60fps, if you want to change this
 
 ## References and Further Reading
 
-[1] T. Kane  and D.  Levinson, Dynamics, theory  and applications. New York: McGraw-Hill, 1985. 
+[1] T. Kane  and D.  Levinson, Dynamics, theory  and applications. New York: McGraw-Hill, 1985.
 
 [2] Hussain, Zakia & Azlan, Norsinnira. (2016). KANE's method for dynamic modeling. 174-179. 10.1109/I2CACIS.2016.7885310.
 
