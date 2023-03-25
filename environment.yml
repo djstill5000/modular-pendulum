@@ -1,4 +1,4 @@
-name: kane-p
+name: modp
 channels:
   - conda-forge
   - defaults
@@ -204,4 +204,4 @@ dependencies:
   - zstd=1.5.2=h3eb15da_6
   - pip:
       - mpmath==1.2.1
-prefix: /home/djstill/miniconda3/envs/kane-p
+prefix: /home/djstill/miniconda3/envs/modp
