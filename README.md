@@ -20,7 +20,7 @@ conda env create -f environment.yml
 Run the Conda Environment:
 
 ```
-conda activate kane-p
+conda activate modp
 ```
 
 In `Kane-Integrate.py` you can find the customizable parameters.
