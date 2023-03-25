@@ -1,4 +1,4 @@
-import Kane_Integrate
+import Calculate
 import numpy as np
 
 from manim import *
@@ -13,9 +13,9 @@ class Animate(Scene):
     
     def construct(self):
 
-        x = Kane_Integrate.x
-        y = Kane_Integrate.y
-        n = Kane_Integrate.n
+        x = Calculate.x
+        y = Calculate.y
+        n = Calculate.n
         
         bobs = []
         lines = []
@@ -49,5 +49,5 @@ class Animate(Scene):
                 self.add(bobs[j+1],lines[j])
                 Animations.append(bobs[j+1].animate.move_to([x[i][j],y[i][j],0]))
 
-            self.play(*Animations, run_time = 1/Kane_Integrate.fps)
+            self.play(*Animations, run_time = 1/Calculate.fps)
             
