@@ -1,4 +1,4 @@
-# Modular Pendulum
+# Modular-Pendulum
 
 ![Animate_ManimCE_v0 17 2](https://user-images.githubusercontent.com/89823585/227409278-f264047d-eadb-4f17-8891-8968fa4f14f6.gif)
 
