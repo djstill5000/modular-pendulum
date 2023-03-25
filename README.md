@@ -1,4 +1,4 @@
-# Kane Pendulum
+# Modular Pendulum
 
 Creates animated pendulums!
 
