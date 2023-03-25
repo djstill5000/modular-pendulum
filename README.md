@@ -1,6 +1,7 @@
 # Modular-Pendulum
 
 ![Animate_ManimCE_v0 17 2](https://user-images.githubusercontent.com/89823585/227409278-f264047d-eadb-4f17-8891-8968fa4f14f6.gif)
+![Animate_ManimCE_v0 17 2](https://user-images.githubusercontent.com/89823585/227701903-da46f64c-1938-4a4a-a49b-cbbaadde48dd.gif)
 
 The equations of motions are found using Kane's method via the Sympy library. The Integration is done using Scipy and the animation is done in ManimCE.
 
