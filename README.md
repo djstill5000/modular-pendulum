@@ -23,7 +23,7 @@ Run the Conda Environment:
 conda activate modp
 ```
 
-In `Kane-Integrate.py` you can find the customizable parameters.
+In `config.ini` you can find the customizable parameters.
 
 To generate the animation exectute the following in the conda environment:
 
