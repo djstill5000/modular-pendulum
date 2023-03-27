@@ -33,10 +33,10 @@ By default, manim generates an mp4 at 1080p at 60fps, if you want to change this
 
 ## References and Further Reading
 
-[1] *T. Kane  and D.  Levinson, Dynamics, theory  and applications. New York: McGraw-Hill, 1985.*
+[1] *T. Kane  and D.  Levinson. (1985). "Dynamics, theory  and applications."*
 
-[2] *Hussain, Zakia & Azlan, Norsinnira. (2016). KANE's method for dynamic modeling. 174-179. 10.1109/I2CACIS.2016.7885310.*
+[2] *Hussain, Zakia & Azlan, Norsinnira. (2016). "KANE's method for dynamic modeling."*
 
-[3] *Stoneking. Eric, "Implementation of Kane's Method for a spacecraft Composed of Multiple Rigid Bodies", AIAA-2013-4649*
+[3] *Stoneking. Eric. (2013). "Implementation of Kane's Method for a spacecraft Composed of Multiple Rigid Bodies."*
 
-[4] *Charles. S, "The Lagrangian Mechanics and Pseudo-Periodicity of The Many-Body Planar Pendulum System", doi: 10.48550/arXiv.1911.04364*
+[4] *Charles. S. (2019). "The Lagrangian Mechanics and Pseudo-Periodicity of The Many-Body Planar Pendulum System."*
