@@ -41,13 +41,24 @@ class Animate(Scene):
         
         #Animation Loop
         for i in range(len(x)):
-
+        
+            
+            #Trails = []
             Animations = []
+            #newloc = bobs[-1].get_center()
+            #newloc2 = bobs[-2].get_center()
+            #newloc3 = bobs[-3].get_center()
+            #dot = Dot(radius=0.02).move_to(newloc).set_color(WHITE)
+            #dot2 = Dot(radius=0.02).move_to(newloc2).set_color(BLUE)
+            #dot3 = Dot(radius=0.02).move_to(newloc3).set_color(RED)
+            #self.add(dot,dot2,dot3)
             
             for j in range(len(lines)):
-                self.remove(bobs[j+1])
-                self.add(bobs[j+1],lines[j])
-                Animations.append(bobs[j+1].animate.move_to([x[i][j],y[i][j],0]))
+            	newloc = bobs[j+1].get_center()
+            	dot = Dot(radius=0.02).move_to(newloc).set_color(colors[j])
+            	self.remove(bobs[j+1])
+            	self.add(bobs[j+1],lines[j],dot)
+            	Animations.append(bobs[j+1].animate.move_to([x[i][j],y[i][j],0]))
 
             self.play(*Animations, run_time = 1/Calculate.fps)
             
