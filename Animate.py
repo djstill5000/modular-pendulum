@@ -32,7 +32,7 @@ class Animate(Scene):
         for i in range(n):
             if i == 0:
                 bobs.append(Dot())
-            bobs.append(Dot(radius=0.05).move_to((i+1.25)*RIGHT+(i+1.25)*UP).set_color(colors[i]))
+            bobs.append(Dot(radius=0.05).move_to(i*RIGHT+i*UP).set_color(colors[i]))
             lines.append(Line(bobs[i],bobs[i+1]).set_stroke(width = 2))
 
         #Calls getline for each String
@@ -42,16 +42,7 @@ class Animate(Scene):
         #Animation Loop
         for i in range(len(x)):
         
-            
-            #Trails = []
             Animations = []
-            #newloc = bobs[-1].get_center()
-            #newloc2 = bobs[-2].get_center()
-            #newloc3 = bobs[-3].get_center()
-            #dot = Dot(radius=0.02).move_to(newloc).set_color(WHITE)
-            #dot2 = Dot(radius=0.02).move_to(newloc2).set_color(BLUE)
-            #dot3 = Dot(radius=0.02).move_to(newloc3).set_color(RED)
-            #self.add(dot,dot2,dot3)
             
             for j in range(len(lines)):
             	newloc = bobs[j+1].get_center()
