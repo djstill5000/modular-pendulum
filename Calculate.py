@@ -21,7 +21,11 @@ duration = int(config['PARAMETERS']['duration'])
 fps = int(config['PARAMETERS']['fps'])                                                    
 lengths = np.fromstring(config['PARAMETERS']['lengths'], sep = ' ')
 masses = np.fromstring(config['PARAMETERS']['masses'], sep = ' ')
+trails = config.getboolean('PARAMETERS','trails')
+strings = config.getboolean('PARAMETERS','strings')
 t = np.linspace(0, duration, duration*fps)
+
+
 
 g = symbols('g')
 l = symbols('l:{0}'.format(n))
