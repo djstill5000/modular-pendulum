@@ -1,12 +1,9 @@
 # Modular-Pendulum
 
-![Animate_ManimCE_v0 17 2](https://github.com/user-attachments/assets/2ef0673a-938c-4668-8be7-74d56bddaabc)
-<img src="![Animate_ManimCE_v0 17 2](https://github.com/user-attachments/assets/2ef0673a-938c-4668-8be7-74d56bddaabc.gif)" width="250" height="250"/>
-<img src="![Animate_ManimCE_v0 17 2](https://github.com/user-attachments/assets/fe7aae6f-8f0d-4b94-954a-1fae4577322c.gif)" width="250" height="250"/>
-![Animate_ManimCE_v0 17 2](https://github.com/user-attachments/assets/fe7aae6f-8f0d-4b94-954a-1fae4577322c)
-
 Python script used to create n-body pendulum simulations in any media format supported by the Manim library (mp4, gif, etc).
 The equations of motions are found using Kane's method via the Sympy library. The Integration is done using Scipy and the animation is done in ManimCE.
+
+![Animate_ManimCE_v0 17 2](https://github.com/user-attachments/assets/05f2abfe-c85d-4807-9fd6-9041225e8847)
 
 ## Installation
 
