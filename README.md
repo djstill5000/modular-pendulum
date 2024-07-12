@@ -1,18 +1,19 @@
 # Modular-Pendulum
 
-![Animate_ManimCE_v0 17 2](https://user-images.githubusercontent.com/89823585/229081241-0e587796-99e0-4b15-9cd3-ab86b7f4426b.gif)
+![Animate_ManimCE_v0 17 2](https://github.com/user-attachments/assets/2ef0673a-938c-4668-8be7-74d56bddaabc)
 
 
+Python script used to create n-body pendulum simulations in any media format supported by the Manim library (mp4, gif, etc).
 The equations of motions are found using Kane's method via the Sympy library. The Integration is done using Scipy and the animation is done in ManimCE.
 
 ## Installation
 
-All of the dependencies are provided in a conda environment:
+All of the dependencies are provided in a conda environment, ensure that you have the conda-forge channel enabled, and conda channel_priority set to flexible
+before trying to install the environment or it may not generate correctly. You may also have to the libmamba solver enabled in your conda config.
 
 ```
 conda env create -f environment.yml
 ```
-
 
 ## Usage
 
@@ -24,7 +25,7 @@ conda activate modp
 
 In `config.ini` you can find the customizable parameters.
 
-To generate the animation exectute the following in the conda environment:
+To generate the animation exectute the following in the `modp` conda environment:
 
 ```
 manim Animate.py Animate
