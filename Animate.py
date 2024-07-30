@@ -1,5 +1,6 @@
 import Calculate
 import numpy as np
+import json
 
 from manim import *
 from manim.utils.color import Colors
@@ -21,13 +22,26 @@ class Animate(Scene):
 
         bobs = []
         lines = []
-        colors = [RED, BLUE, GREEN, YELLOW, ORANGE]
+        colors = []
+
+        with open('colors.json', 'r') as file:
+            color_chart = json.load(file)[0]
+
+        #Gets ball color from config
+        color_config = Calculate.params.get('ball_colors')
+        color_list = color_config.split()
+        for color in color_list:
+            colors.append(color_chart.get(color))
+
+        #Gets string color from config
+        string_color_config = Calculate.params.get('string_color')
+        string_color = color_chart.get(string_color_config)
 
         # Creates updater object for the Strings
         def getline(Point1, Point2):
             start_point = Point1.get_center()
             end_point = Point2.get_center()
-            line = Line(start_point, end_point).set_stroke(width=2)
+            line = Line(start_point, end_point).set_stroke(width=2).set_color(string_color)
             return line
 
         #Updater to make fading bobs possible
@@ -39,9 +53,9 @@ class Animate(Scene):
         for i in range(n):
             if i == 0:
                 bobs.append(Dot())
-            bobs.append(Dot(radius=0.05).move_to(
+            bobs.append(Dot(radius=0.10).move_to(
                 i*RIGHT+i*UP).set_color(colors[i]))
-            lines.append(Line(bobs[i], bobs[i+1]).set_stroke(width=2))
+            lines.append(Line(bobs[i], bobs[i+1]).set_stroke(width=2).set_color(string_color))
 
         # Calls getline for each String
         for i in range(n):
