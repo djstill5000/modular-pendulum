@@ -27,6 +27,11 @@ class Animate(Scene):
         with open('colors.json', 'r') as file:
             color_chart = json.load(file)[0]
 
+
+        background_color_config = Calculate.params.get('background_color')
+        background_color = color_chart.get(background_color_config)
+        self.camera.background_color = background_color
+
         #Gets ball color from config
         color_config = Calculate.params.get('ball_colors')
         color_list = color_config.split()
