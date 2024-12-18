@@ -103,4 +103,3 @@ def integrate(n, KM, times, initial_thetas, initial_omegas = 0):
 
 KM, fr, fr_star = kanes_method(n)
 x, y = integrate(n, KM, t, theta)
-
