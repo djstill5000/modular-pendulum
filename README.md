@@ -3,7 +3,10 @@
 Python script used to create n-body pendulum simulations in any media format supported by the Manim library (mp4, gif, etc).
 The equations of motions are found using Kane's method via the Sympy library. The Integration is done using Scipy and the animation is done in ManimCE.
 
-![Animate_ManimCE_v0 17 2](https://github.com/user-attachments/assets/05f2abfe-c85d-4807-9fd6-9041225e8847)
+![Animate_ManimCE_v0 17 2](https://github.com/user-attachments/assets/18f9661a-5534-42b7-b3e3-8e05373b03f0)
+
+
+
 
 ## Installation
 
@@ -31,6 +34,12 @@ manim Animate.py Animate
 ```
 
 By default, manim generates an mp4 at 1080p at 60fps, if you want to change this you can add parameters to the previous command, See the [ManimCE API](https://docs.manim.community/en/stable/guides/configuration.html) for more details.
+
+## Gallery
+
+![2](https://github.com/user-attachments/assets/9d2aa6a6-2337-4fc0-b2a4-e289a18a172a)
+
+![3](https://github.com/user-attachments/assets/61d2abcc-06cc-45fb-bc39-570da067d8e6)
 
 ## References and Further Reading
 
