@@ -23,6 +23,7 @@ lengths = np.fromstring(config['PARAMETERS']['lengths'], sep = ' ')
 masses = np.fromstring(config['PARAMETERS']['masses'], sep = ' ')
 trails = config.getboolean('PARAMETERS','trails')
 strings = config.getboolean('PARAMETERS','strings')
+trail_length = int(config['PARAMETERS']['trail_length'])
 
 #Everything in Parameter configruation above can probably be condensed into this
 params = dict(config.items('PARAMETERS'))

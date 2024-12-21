@@ -36,7 +36,7 @@ class Animate(Scene):
         lines = []
 
         # Create VGroups for trails (one per bob)
-        MAX_TRAIL_LENGTH = 50  # Adjust this value to control trail length
+        MAX_TRAIL_LENGTH = int(Calculate.params.get('trail_length'))
         trail_groups = [VGroup() for _ in range(n)]
         trail_points = [deque(maxlen=MAX_TRAIL_LENGTH) for _ in range(n)]
 
