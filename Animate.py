@@ -1,92 +1,115 @@
 import Calculate
 import numpy as np
 import json
-
 from manim import *
 from manim.utils.color import Colors
 from configparser import ConfigParser
+from collections import deque
 
 file = 'config.ini'
 config = ConfigParser()
 config.read(file)
 
 class Animate(Scene):
-
     def construct(self):
-
         x = Calculate.x
         y = Calculate.y
         n = Calculate.n
         trails = Calculate.trails
         strings = Calculate.strings
 
-        bobs = []
-        lines = []
-        colors = []
-
+        # Load colors once at initialization
         with open('colors.json', 'r') as file:
             color_chart = json.load(file)[0]
 
-
+        # Set background color
         background_color_config = Calculate.params.get('background_color')
-        background_color = color_chart.get(background_color_config)
-        self.camera.background_color = background_color
+        self.camera.background_color = color_chart.get(background_color_config)
 
-        #Gets ball color from config
-        color_config = Calculate.params.get('ball_colors')
-        color_list = color_config.split()
-        for color in color_list:
-            colors.append(color_chart.get(color))
+        # Process colors once
+        color_list = Calculate.params.get('ball_colors').split()
+        colors = [color_chart.get(color) for color in color_list]
+        string_color = color_chart.get(Calculate.params.get('string_color'))
 
-        #Gets string color from config
-        string_color_config = Calculate.params.get('string_color')
-        string_color = color_chart.get(string_color_config)
+        # Initialize bobs and lines
+        bobs = [Dot()]  # Initial anchor point
+        lines = []
 
-        # Creates updater object for the Strings
-        def getline(Point1, Point2):
-            start_point = Point1.get_center()
-            end_point = Point2.get_center()
-            line = Line(start_point, end_point).set_stroke(width=2).set_color(string_color)
-            return line
+        # Create VGroups for trails (one per bob)
+        MAX_TRAIL_LENGTH = 50  # Adjust this value to control trail length
+        trail_groups = [VGroup() for _ in range(n)]
+        trail_points = [deque(maxlen=MAX_TRAIL_LENGTH) for _ in range(n)]
 
-        #Updater to make fading bobs possible
-        def fading_updater():
-            pass
-
-
-        # Create the ball and line objects
+        # Create bobs and lines
         for i in range(n):
-            if i == 0:
-                bobs.append(Dot())
-            bobs.append(Dot(radius=0.10).move_to(
-                i*RIGHT+i*UP).set_color(colors[i]))
-            lines.append(Line(bobs[i], bobs[i+1]).set_stroke(width=2).set_color(string_color))
+            bob = Dot(radius=0.10).move_to([x[0][i], y[0][i], 0]).set_color(colors[i])
+            bobs.append(bob)
 
-        # Calls getline for each String
+            if strings:
+                line = Line(bobs[i], bob).set_stroke(width=2).set_color(string_color)
+                lines.append(line)
+
+        # Add objects to scene
         for i in range(n):
-            lines[i].add_updater(lambda mobject, i=i: mobject.become(
-                getline(bobs[i], bobs[i+1])))
+            if strings:
+                self.add(lines[i])
+            self.add(bobs[i + 1])
+            if trails:
+                self.add(trail_groups[i])
 
-        # Animation Loop
-        for i in range(len(x)):
+        # Define line updater function
+        def update_line(line, i):
+            line.put_start_and_end_on(
+                bobs[i].get_center(),
+                bobs[i + 1].get_center()
+            )
 
-            Animations = []
+        # Add updaters to lines
+        if strings:
+            for i in range(n):
+                lines[i].add_updater(lambda m, i=i: update_line(m, i))
 
-            for j in range(len(lines)):
-                newloc = [x[i][j],y[i][j], 0] #Initial Position for bobs
-                dot = Dot(radius=0.02).move_to(newloc).set_color(colors[j])
-                #dot.add_updater(fading_updater(i)), Uncomment this once fading_updater works
+        # Animate using physics timesteps
+        dt = 1/Calculate.fps
+        for frame in range(len(x)):
+            animations = []
 
-                #Conditionals
-                if trails and strings:
-                    self.add(bobs[j+1], lines[j], dot)
-                if trails and not strings:
-                    self.add(bobs[j+1], dot)
-                if not trails and strings:
-                    self.add(lines[j])
-                if not trails and not strings:
-                    pass
+            # Update trails
+            if trails:
+                for j in range(n):
+                    pos = [x[frame][j], y[frame][j], 0]
+                    trail_points[j].append(pos)
 
-                Animations.append(bobs[j+1].animate.move_to([x[i][j], y[i][j], 0]))
+                    # Remove old trail group and create new one
+                    self.remove(trail_groups[j])
+                    trail_groups[j] = VGroup()
 
-            self.play(*Animations, run_time=1/Calculate.fps)
+                    # Create dots with variable opacity
+                    points_list = list(trail_points[j])
+                    for idx, point in enumerate(points_list):
+                        opacity = (idx + 1) / len(points_list)  # Newer points are more opaque
+                        dot = Dot(
+                            point=point,
+                            radius=0.02,
+                            color=colors[j],
+                            fill_opacity = opacity
+                        )
+                        trail_groups[j].add(dot)
+
+                    self.add(trail_groups[j])
+
+            # Animate bob movements
+            for j in range(n):
+                pos = [x[frame][j], y[frame][j], 0]
+                animations.append(bobs[j + 1].animate.move_to(pos))
+
+            self.play(
+                *animations,
+                run_time=dt,
+                rate_func=linear
+            )
+
+        # Clean up
+        if strings:
+            for line in lines:
+                line.clear_updaters()
